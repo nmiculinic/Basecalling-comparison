@@ -18,14 +18,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         wget \
         cmake \
         git \ 
+        libbz2-dev \
+        libncurses-dev \
+        liblzma-dev \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /opt
+
+ENV SAMTOOLS_VERSION="1.8"
+RUN wget --quiet https://github.com/samtools/samtools/releases/download/$SAMTOOLS_VERSION/samtools-$SAMTOOLS_VERSION.tar.bz2 -O samtools.tar.bz2 && \
+    tar -xjf samtools.tar.bz2 && \
+    rm samtools.tar.bz2 && \
+    cd /opt/samtools-$SAMTOOLS_VERSION && \
+    make -j && \
+    make prefix=/usr/bin install && \
+    cd /opt && rm -Rf /opt/samtools-$SAMTOOLS_VERSION 
+
 RUN python3 --version
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
-WORKDIR /opt
 RUN curl -L https://github.com/lh3/minimap2/releases/download/v2.10/minimap2-2.10_x64-linux.tar.bz2 | tar -jxvf - && \
     mv ./minimap2-2.10_x64-linux/minimap2 /usr/bin/minimap2 && \
     rm -Rf ./minimap2-2.10_x64-linux
@@ -67,13 +80,3 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git nanopolish && \
     cd /opt && \
     rm -Rf nanopolish 
 
-ENV SAMTOOLS_VERSION="1.8"
-RUN wget --quiet https://github.com/samtools/samtools/releases/download/$SAMTOOLS_VERSION/samtools-$SAMTOOLS_VERSION.tar.bz2 -O samtools.tar.bz2 && \
-    tar -xjf samtools.tar.bz2 && \
-    rm samtools.tar.bz2 && \
-    cd /opt/samtools-$SAMTOOLS_VERSION && \
-    ls && pwd && \
-    ./configure --without-curses --disable-bz2 --disable-lzma && \
-    make -j && \
-    make prefix=/usr/bin install && \
-    cd /opt && rm -Rf /opt/samtools-$SAMTOOLS_VERSION 
