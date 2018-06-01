@@ -80,3 +80,13 @@ RUN git clone --recursive https://github.com/jts/nanopolish.git nanopolish && \
     cd /opt && \
     rm -Rf nanopolish 
 
+
+RUN ln -s /usr/bin/python3 -T /usr/bin/python
+ENV MEDAKA_VERSION="0.2.0"
+RUN wget --quiet https://github.com/nanoporetech/medaka/archive/v$MEDAKA_VERSION.zip -O medaka.zip && \
+    unzip -q medaka.zip && \
+    rm medaka.zip && \
+    cd /opt/medaka-$MEDAKA_VERSION && \
+    mkdir venv && \
+    make -j -e IN_VENV="true" install && \
+    cd /opt && rm -Rf /opt/medaka-$MEDAKA_VERSION
