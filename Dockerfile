@@ -90,3 +90,6 @@ RUN wget --quiet https://github.com/nanoporetech/medaka/archive/v$MEDAKA_VERSION
     mkdir venv && \
     make -j -e IN_VENV="true" install && \
     cd /opt && rm -Rf /opt/medaka-$MEDAKA_VERSION
+
+WORKDIR /opt/bcmp
+COPY . . 
