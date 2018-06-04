@@ -22,8 +22,12 @@
 # Set this to the desired number of threads (for alignment and polishing).
 threads=32
 
+
 # Set this to the directory containing the Python scripts (e.g. read_length_identity.py).
-python_script_dir=/path/to/python_scripts
+script_path=$0
+default_script_dir="${script_path%/*}"
+python_script_dir="$default_script_dir"
+echo "using $python_script_dir for python script dir"
 
 # Set the full path to Nanopolish here.
 nanopolish_exec_dir=/path/to/nanopolish
